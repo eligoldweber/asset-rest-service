@@ -21,4 +21,7 @@ the files that are relevant are:
   
   /bin/www
 
+
 Eli Goldweber
+
+Thanks to Alexander Wong for getting me started
