@@ -147,7 +147,7 @@ console.log("HERE: " + config.asset.ingestUri+'/'+ req.params.type + '/' + req.p
       console.log("what is going on????");
       self.model = JSON.parse(response.body);
       //self.model  = JSON.stringify(self.modelA);
-      self.model[0].uri = "/test/"+self.model[0].uri.substr(self.model[0].uri.indexOf('G')) + "*" + uuid1; //tags goes here
+      self.model[0].uri = "/test/"+self.model[0].uri.substr(self.model[0].uri.indexOf('G')) + "-uuid-" + uuid1; //tags goes here
       self.model[0]["edge-alias"] = req.params.model;
       self.model[0].sensors = "/sensors/"+n;
       self.model[0].devices = req.body.devices;
@@ -159,6 +159,9 @@ console.log("HERE: " + config.asset.ingestUri+'/'+ req.params.type + '/' + req.p
       
        //console.log("TS TS TS TS TEST " + temp + self.check);
         if(temp == 0){
+          self.postKitAssetDEMO(self.model,function(temp){
+              console.log("[TRYING TO POST..........]");
+          });
           callback(200, self.model);
         }else{
           callback(400, "NOT UNIQUE " + temp);
@@ -200,6 +203,28 @@ request(options, function (error, response, body) {
  callback(body.tags[0].stats.rawCount);
 });
 };
+
+
+AssetController.prototype.postKitAssetDEMO = function(req, callback) {
+  console.log("in piost " + JSON.stringify(req));
+  var options = { method: 'POST',
+  url: 'https://predix-asset.run.aws-usw02-pr.ice.predix.io/test',
+  headers: 
+   { 
+     'cache-control': 'no-cache',
+      authorization: 'Bearer ' + uaaController.getToken(),
+     'content-type': 'application/json;charset=utf-8',
+     'predix-zone-id': '10a21c94-1c44-44dc-86a3-9a1c7d50576e' },
+  body: JSON.stringify(req) };
+
+request(options, function (error, response, body) {
+  if (error) throw new Error(error);
+
+  console.log(body);
+  callback(body);
+});
+};
+
 
 
 AssetController.prototype.getModel = function() {
