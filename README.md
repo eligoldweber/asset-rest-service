@@ -11,7 +11,7 @@ the files that are relevant are:
 
   /routes/index.js
 
-  /controllers/AssetControllerTest1.js
+  /controllers/AssetController.js
 
   /controllers/UAAController.js
 
