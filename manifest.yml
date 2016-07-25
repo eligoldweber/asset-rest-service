@@ -1,0 +1,20 @@
+---
+applications:
+- name: asset-rest-service
+  memory: 128M
+  buildpack: nodejs_buildpack
+  #command:  DEBUG=express:* node app.js
+  command:  npm start
+  services:
+  # Enter the names of your asset and uaa services (auto-binding)
+  # For example:
+   - dev-asset-instance
+   - dev-secure-uaa-instance
+  env:
+    NODE_ENV: production # Used to differentiate local testing and deployment in Cloud Foundry
+    uaa_service_label: predix-uaa # You shouldn't have to change this
+    #timeseries_service_label: predix-timeseries # You shouldn't have to change this //**** STILL TIMESERIES *** ///
+    asset_service_label: predix-asset # You shouldn't have to change this //**** ADDED *** ///
+    # Timeseries:
+    client: app-client-id
+    client_credential: YXBwLWNsaWVudC1pZDpzZWNyZXQ=
