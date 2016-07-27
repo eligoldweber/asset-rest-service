@@ -53,6 +53,9 @@ console.log("uuid = " + uuid1);    // -> '02a2ce90-1432-11e1-8558-0b488e4fc115')
   'Content-Type' : 'application/json'
   }
 };
+uaaController.fetchToken(function(){
+    self.setHeaders();
+  });
 console.log("HERE: " + config.asset.ingestUri+'/'+ req.params.type + '/' + req.params.model);
   // console.log(JSON.stringify(options, null, 2));
 
@@ -77,8 +80,9 @@ AssetController.prototype.processAsset = function(req, callback) {
 var nameLength = req.params.model.length;
 //var n = req.params.model.substring(0,nameLength-2);
 var n = req.params.model.substring(0,req.params.model.indexOf('-'));
-
-
+self.getUAA(function(localUAA){
+              console.log("[TRYING TO UAAAAA.......... ]" + localUAA);
+         
   var uuid1 = uuid.v1();
   console.log("uuid = " + uuid1);    // -> '02a2ce90-1432-11e1-8558-0b488e4fc115')
   var options = {
@@ -86,11 +90,12 @@ var n = req.params.model.substring(0,req.params.model.indexOf('-'));
   //method: 'GET',
   headers: {
     //'Authorization': 'bearer eyJhbGciOiJSUzI1NiJ9.eyJqdGkiOiI3MGM0NjA3MS05MTk3LTQ2MDYtOTBmYi02YTJiNGVkM2QwNjEiLCJzdWIiOiJhcHAtY2xpZW50LWlkIiwic2NvcGUiOlsidGltZXNlcmllcy56b25lcy5mYTZjODAwMC00Y2M4LTRmYTktYTMwNy0wNzVmYmZhYTg4OGQuaW5nZXN0IiwidGltZXNlcmllcy56b25lcy5mYTZjODAwMC00Y2M4LTRmYTktYTMwNy0wNzVmYmZhYTg4OGQucXVlcnkiLCJ1YWEucmVzb3VyY2UiLCJ0aW1lc2VyaWVzLnpvbmVzLmZhNmM4MDAwLTRjYzgtNGZhOS1hMzA3LTA3NWZiZmFhODg4ZC51c2VyIiwib3BlbmlkIiwidWFhLm5vbmUiLCJwcmVkaXgtYXNzZXQuem9uZXMuMTBhMjFjOTQtMWM0NC00NGRjLTg2YTMtOWExYzdkNTA1NzZlLnVzZXIiLCJwcmVkaXgtYXNzZXQuem9uZXMuNDVmN2U2NDUtOTFkNS00ZjRiLTg2YTAtOTgzZjlmNjdiYWU4LnVzZXIiXSwiY2xpZW50X2lkIjoiYXBwLWNsaWVudC1pZCIsImNpZCI6ImFwcC1jbGllbnQtaWQiLCJhenAiOiJhcHAtY2xpZW50LWlkIiwiZ3JhbnRfdHlwZSI6ImNsaWVudF9jcmVkZW50aWFscyIsInJldl9zaWciOiIzYzA2Zjk2IiwiaWF0IjoxNDY4MjQxNzI3LCJleHAiOjE0NjgyODQ5MjcsImlzcyI6Imh0dHBzOi8vNWYyZmI3ODEtZjE0Zi00ZjUwLTk4YWYtMDNlMzBmMzU1ZGNhLnByZWRpeC11YWEucnVuLmF3cy11c3cwMi1wci5pY2UucHJlZGl4LmlvL29hdXRoL3Rva2VuIiwiemlkIjoiNWYyZmI3ODEtZjE0Zi00ZjUwLTk4YWYtMDNlMzBmMzU1ZGNhIiwiYXVkIjpbImFwcC1jbGllbnQtaWQiLCJ0aW1lc2VyaWVzLnpvbmVzLmZhNmM4MDAwLTRjYzgtNGZhOS1hMzA3LTA3NWZiZmFhODg4ZCIsInVhYSIsIm9wZW5pZCIsInByZWRpeC1hc3NldC56b25lcy4xMGEyMWM5NC0xYzQ0LTQ0ZGMtODZhMy05YTFjN2Q1MDU3NmUiLCJwcmVkaXgtYXNzZXQuem9uZXMuNDVmN2U2NDUtOTFkNS00ZjRiLTg2YTAtOTgzZjlmNjdiYWU4Il19.vZvSnPKM3C-9npNcimTYeQRpzA9A8JARDxINX8rzPvxjNRXrQaASAEQkUY2YNhVez3aNoS4tQBFBPra8b1Z_3Wj26NDcCcvfuxrthAVaeGwKiPJVwIXP3QWyLzWrdWPzK7QMldpg5CdAva3HBfdGeiijMgesPoK4qX5lSJVCjOX1KIpX-_8GfLxjrHn1SPD_2DW04LY_vcKcsAI4ls2RRp4JVqKpeQYmA6zb1L1OB2KxPKWmHPoXNUEdNZx0u3QvMMe4fjqOADh-6i8mZHZca3moPewmulvvvC0z-w4hAa-Hcsh9a3jio0vHR4NDYJJ84uuGkFxtirei-yR2Dw2tVg',
-    'Authorization': 'bearer ' + uaaController.getToken(),
+    'Authorization': 'bearer ' + localUAA,
     'Predix-Zone-Id': config.asset.zoneId,
   'Content-Type' : 'application/json'
   }
 };
+
 console.log("HERE: " + config.asset.ingestUri+'/'+ req.params.type + '/' + n);
   // console.log(JSON.stringify(options, null, 2));
 
@@ -99,19 +104,19 @@ console.log("HERE: " + config.asset.ingestUri+'/'+ req.params.type + '/' + n);
       console.log("what is going on????");
       self.model = JSON.parse(response.body);
       //self.model  = JSON.stringify(self.modelA);
-      self.model[0].uri = "/test/"+self.model[0].uri.substr(self.model[0].uri.indexOf('G')) + "-uuid-" + uuid1; //tags goes here
+      self.model[0].uri = "/testEli/"+self.model[0].uri.substr(self.model[0].uri.indexOf('G')) + "-uuid-" + uuid1 + "ELIELIELI"; //tags goes here
       self.model[0]["edge-alias"] = req.params.model;
       self.model[0].sensors = "/sensors/"+n;
       self.model[0].devices = req.body.devices;
       self.model[0].kits =  req.body.kits;
       console.log("[INFO] Token fetched (expires in " +body + " seconds)." +self.model[0].uri +  "  !" + " dfs " +self.model[0].devices + " :: "  + self.model[0].kits); 
       //TRY TIMESERIES CALL
-
-      self.checkTS(self.model[0].uri,function(temp){
+self.getUAAGlobal(function(UaaGlobal){
+      self.checkTS(self.model[0].uri,UaaGlobal,function(temp){
       
        //console.log("TS TS TS TS TEST " + temp + self.check);
         if(temp == 0){
-          self.postGlobalAsset(self.model,function(temp){
+          self.postGlobalAsset(self.model,localUAA,function(temp){
               console.log("[TRYING TO POST..........]");
           });
           callback(200, self.model);
@@ -119,19 +124,19 @@ console.log("HERE: " + config.asset.ingestUri+'/'+ req.params.type + '/' + n);
           callback(400, "NOT UNIQUE " + temp);
         }
     });
+  });
    
     } else if (error || response.statusCode != 200) {
       console.log("[INFO] Error fetching token: " + response.statusCode);
     }
   });
+   });
 };
 
-AssetController.prototype.checkTS = function(m, callback) {
+AssetController.prototype.checkTS = function(m,uaa, callback) {
   console.log("[INFO] Fetching TS... ");
   var self = this;
 
- // var uuid1 = uuid.v1();
-//console.log(' [INFO] Bearer ' + uaaControllerTS.getTokenTS() );    // -> '02a2ce90-1432-11e1-8558-0b488e4fc115')
   var options = { method: 'POST',
  url: 'https://time-series-store-predix.run.aws-usw02-pr.ice.predix.io/v1/datapoints',
  headers: 
@@ -139,7 +144,7 @@ AssetController.prototype.checkTS = function(m, callback) {
     'cache-control': 'no-cache',
     'predix-zone-id': 'ad85c18d-6ad0-463c-a4b2-175567ffa7ef',
     'content-type': 'application/json',
-    authorization: 'Bearer ' + uaaControllerTS.getTokenTS() }, 
+    authorization: 'Bearer ' + uaa }, 
  body: { start: '1y-ago', tags: [ { name: m } ] },
  json: true };
 
@@ -157,14 +162,14 @@ request(options, function (error, response, body) {
 };
 
 
-AssetController.prototype.postGlobalAsset = function(req, callback) {
+AssetController.prototype.postGlobalAsset = function(req,uaa, callback) {
   console.log("in piost " + JSON.stringify(req));
   var options = { method: 'POST',
-  url: 'https://predix-asset.run.aws-usw02-pr.ice.predix.io/test',
+  url: 'https://predix-asset.run.aws-usw02-pr.ice.predix.io/testEli',
   headers: 
    { 
      'cache-control': 'no-cache',
-      authorization: 'Bearer ' + uaaController.getToken(),
+      authorization: 'Bearer ' + uaa,
      'content-type': 'application/json;charset=utf-8',
      'predix-zone-id': '10a21c94-1c44-44dc-86a3-9a1c7d50576e' },
   body: JSON.stringify(req) };
@@ -177,6 +182,42 @@ request(options, function (error, response, body) {
 });
 };
 
+AssetController.prototype.getUAA = function(callback) {
+  console.log("in UAAAAAAAA " );
+var options = { method: 'GET',
+  url: config.uaa.issuerId,
+  qs: { grant_type: 'client_credentials' },
+  headers: 
+   { 'cache-control': 'no-cache',
+     authorization: 'Basic YXBwLWNsaWVudC1pZDpzZWNyZXQ=' } };
+
+request(options, function (error, response, body) {
+  if (error) throw new Error(error);
+
+  //console.log(JSON.parse(body).access_token);
+  callback(JSON.parse(body).access_token);
+});
+};
+
+
+AssetController.prototype.getUAAGlobal = function(callback) {
+  console.log("in UAAAAAAAA " );
+var options = { method: 'GET',
+  url: 'https://9bf4a9ba-79b1-4055-8282-096d8d478941.predix-uaa.run.aws-usw02-pr.ice.predix.io/oauth/token',
+  qs: { grant_type: 'client_credentials' },
+  headers: 
+   { 'cache-control': 'no-cache',
+     authorization: 'Basic cHJlZGl4X3RyYW5zZm9ybV8xOnByM2RpeEtpdHNSMGNr' } };
+
+request(options, function (error, response, body) {
+  if (error) throw new Error(error);
+
+  //console.log(JSON.parse(body).access_token);
+  callback(JSON.parse(body).access_token);
+});
+};
+
+////////////////
 
 
 AssetController.prototype.getModel = function() {
