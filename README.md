@@ -38,6 +38,24 @@ At the same time, the microservice posts the updated asset to a Global Asset Ins
 [Note: If called from https://github.com/mwilli31/predix-asset-local the local edge device will use the response of the updated asset to update the temporary asset that was being stored in the local asset DB]
 
 -----------------------------------------
+To change the Authentication to work for other UAA instances, modify the /controllers/AssetController.js file. There are 2 functions that take care of the UAA authentication.
+
+For Local UAA (Asset Registry) modify:
+
+	AssetController.prototype.getUAA = function(callback)
+
+For GLobal UAA (Global Timeseries and Global Asset) modify:
+
+	AssetController.prototype.getUAAGlobal = function(callback)
+
+These functions need the UAA endpoint authorization URL, and the BASIC authentication \
+
+Also in the manifest file make sure to include the local UAA instance
+and for the GLOBAL ASSET methods make sure to include the Zone-ID
+
+	AssetController.prototype.postGlobalAsset = function(req,uaa, callback) 
+
+-----------------------------------------
 
 the files that are relevant are:
 
