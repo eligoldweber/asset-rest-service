@@ -1,8 +1,6 @@
 asset-rest-service
 =======================
 
-README coming.... sorry that it is so messy
-
 This is a nodejs micro service that can be hosted in Predix or other cloud foundry systems.
 
 There are 2 routes that are supported in this microservice.
