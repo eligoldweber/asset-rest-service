@@ -90,7 +90,7 @@ console.log("HERE: " + config.asset.ingestUri+'/'+ req.params.type + '/' + n);
   request.get(options, function (error, response, body) {
     if (!error && response.statusCode == 200) {
       self.model = JSON.parse(response.body); //create new asset model
-      self.model[0].uri = "/testEli/"+self.model[0].uri.substr(self.model[0].uri.indexOf('G')) + "-uuid-" + uuid1 + "ELIELIELI"; //change this for permanent URI !!!
+      self.model[0].uri = "/testEli/"+self.model[0].uri.substr(self.model[0].uri.indexOf('G')) + "-uuid-" + uuid1; //change this for permanent URI !!!
       self.model[0]["edge-alias"] = req.params.model;
       self.model[0].sensors = "/sensors/"+n;
       self.model[0].devices = req.body.devices;

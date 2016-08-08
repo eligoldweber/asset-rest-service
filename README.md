@@ -53,6 +53,8 @@ and for the GLOBAL ASSET methods make sure to include the Zone-ID
 
 	AssetController.prototype.postGlobalAsset = function(req,uaa, callback) 
 
+MORE INFORMATION IN "configMicroservice.txt"	
+
 -----------------------------------------
 
 the files that are relevant are:
