@@ -64,7 +64,7 @@ The important method for this microservice is the processAsset:
 modifications that need to be made:
 (CHANGES IN "processAsset")
 
-	1) Change the headers for the initial GET
+1) Change the headers for the initial GET
 
 			headers: {
 		    'Authorization': 'bearer ' + localUAA,
@@ -72,44 +72,44 @@ modifications that need to be made:
 		    'Content-Type' : 'application/json'
 		     }
 
-	  the local UAA is retreived from the "getUAA" funtion and is the bearer token for the AssetRegistry(1).
-	  Predix-Zone-Id is the asset zone id for the AssetRegistry - if the app is deployed in the same UAA as the asset registry then leave the config as is. if it is not, change the this field to reflect the correct Zone-Id.
+the local UAA is retreived from the "getUAA" funtion and is the bearer token for the AssetRegistry(1).
+Predix-Zone-Id is the asset zone id for the AssetRegistry - if the app is deployed in the same UAA as the asset registry then leave the config as is. if it is not, change the this field to reflect the correct Zone-Id.
 
-	2) Inside the initial GET from the AssetRegistry, change where the new uri is being set
+2) Inside the initial GET from the AssetRegistry, change where the new uri is being set
 
 			self.model[0].uri = "/testEli/"+self.model[0].uri.substr(self.model[0].uri.indexOf('G')) + "-uuid-" + uuid1; 
 
-	  The first part of the URI needs to be the correct URI of where you would want to store the global instance, normally use "/tags/"
-	  This piece needs to match the end of the url in the "postGlobalAsset" function.
+The first part of the URI needs to be the correct URI of where you would want to store the global instance, normally use "/tags/"
+This piece needs to match the end of the url in the "postGlobalAsset" function.
 
-	3) Right after calling "getUAAGlobal" the method "checkTS" is called
+3) Right after calling "getUAAGlobal" the method "checkTS" is called
 
 			self.checkTS(self.model[0].uri,UaaGlobal,function(temp){ //check uri vs global timeseries
 
-	  Note the second parameter "UaaGlobal" that is the UAA returned from the "getUAAGlobal" function, make sure that this method is configured properly to return the UAA that is associated with the GlobalTS
+Note the second parameter "UaaGlobal" that is the UAA returned from the "getUAAGlobal" function, make sure that this method is configured properly to return the UAA that is associated with the GlobalTS
 
-	4) Similar to step (3) check:
+4) Similar to step (3) check:
 
 			self.postGlobalAsset(self.model,localUAA,function(temp){ //post to global asset
 
-	   Likewise look at the second parameter. Right now it is set to post to the localUAA (the uaa where the app is pushed to) this is for testing purposes, but should be the UaaGlobal
+Likewise look at the second parameter. Right now it is set to post to the localUAA (the uaa where the app is pushed to) this is for testing purposes, but should be the UaaGlobal
 
 (CHANGES IN "checkTS")
 
 
-	5) Inside this method make sure that the TS Predix-Zone-Id is correct for where the globalTS is stored. [note: if this is the same as the ts in the same UAA as the app, then modify the config file and use "config.timeseries.zoneId"]
+5) Inside this method make sure that the TS Predix-Zone-Id is correct for where the globalTS is stored. [note: if this is the same as the ts in the same UAA  as the app, then modify the config file and use "config.timeseries.zoneId"]
 
 
 (CHANGES IN "postGlobalAsset")
 
-	6) Change the end of the URL to reflect where in the asset model that the updated model will be posted (mainly /tags/)
+6) Change the end of the URL to reflect where in the asset model that the updated model will be posted (mainly /tags/)
 
-	7) Make sure that the Zone-Id is correct and consitant with the UAA that is being passed in
+7) Make sure that the Zone-Id is correct and consitant with the UAA that is being passed in
 
 
 (CHANGES IN "getUAA" and "getUAAGlobal")
 	
-	8) modify the url and the authorization fields to reflect the correct values
+8) modify the url and the authorization fields to reflect the correct values
 
 
 
