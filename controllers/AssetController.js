@@ -2,13 +2,12 @@ var WebSocket = require('ws');
 var request = require('request');
 var uuid = require('node-uuid');
 
-var UAAController = require('../controllers/UAAController');
+var UAAController = require('../controllers/UAAController'); 
 var uaaController = new UAAController();
 
 var UAAControllerTS = require('../controllers/UAAControllerTS');
 var uaaControllerTS = new UAAControllerTS();
 
-//var PayloadValidator = require('../controllers/PayloadValidator');
 
 var config = require('../config/config.js');
 
@@ -16,7 +15,6 @@ function AssetController() {
   this.headers = {};
   this.model = null;
   this.check = null;
-  this.date = new Date();
   this.access_token = null;
 
   // Fetch a token and set headers
@@ -37,7 +35,7 @@ AssetController.prototype.setHeaders = function(){ //not used currently but coul
   };
 };
 
-AssetController.prototype.getAssets = function(req, callback) { // simple test method to that returns a single asset depending on req
+AssetController.prototype.getAssets = function(req, callback) { // simple test method to that returns a single asset depending on req takes a parameter like /tags/aaa
   console.log("[INFO] Fetching asset...(B TOKEN = ) ");
   var self = this;
 
@@ -51,15 +49,12 @@ AssetController.prototype.getAssets = function(req, callback) { // simple test m
   'Content-Type' : 'application/json'
   }
 };
-uaaController.fetchToken(function(){
-    self.setHeaders();
-  });
+
 console.log("HERE: " + config.asset.ingestUri+'/'+ req.params.type + '/' + req.params.model);
 
   request.get(options, function (error, response, body) {
     if (!error && response.statusCode == 200) {
       self.model = JSON.parse(response.body);
-      //self.model  = JSON.stringify(self.modelA);
       self.model[0].uri = self.model[0].uri + "*" + uuid1;
       console.log("[INFO] Token fetched (expires in " +body + " seconds)." +self.model[0].uri +  "  !" + " dfs " +self.model[0].model); 
     callback(200, self.model);
@@ -69,12 +64,15 @@ console.log("HERE: " + config.asset.ingestUri+'/'+ req.params.type + '/' + req.p
   });
 };
 
-// /////
-AssetController.prototype.processAsset = function(req, callback) { // main function
+///////end of getAssets ///////////
+
+
+AssetController.prototype.processAsset = function(req, callback) { // main function for workflow
   var self = this;
 var nameLength = req.params.model.length;
-var n = req.params.model.substring(0,req.params.model.indexOf('-'));
-self.getUAA(function(localUAA){         //get local asset registry UAA
+var n = req.params.model.substring(0,req.params.model.indexOf('-')); //parse input
+
+self.getUAA(function(localUAA){  //get local asset registry UAA
   var uuid1 = uuid.v1(); //create UUID
   var options = {
   url: config.asset.ingestUri+'/'+ req.params.type + '/' + n,
@@ -86,10 +84,10 @@ self.getUAA(function(localUAA){         //get local asset registry UAA
   }
 };
 
-console.log("HERE: " + config.asset.ingestUri+'/'+ req.params.type + '/' + n);
+console.log("HERE: " + config.asset.ingestUri+'/'+ req.params.type + '/' + n); //print url that is being queried
   request.get(options, function (error, response, body) {
     if (!error && response.statusCode == 200) {
-      self.model = JSON.parse(response.body); //create new asset model
+      self.model = JSON.parse(response.body); //create/update new asset model
       self.model[0].uri = "/testEli/"+self.model[0].uri.substr(self.model[0].uri.indexOf('G')) + "-uuid-" + uuid1; //change this for permanent URI !!!
       self.model[0]["edge-alias"] = req.params.model;
       self.model[0].sensors = "/sensors/"+n;
@@ -98,7 +96,7 @@ console.log("HERE: " + config.asset.ingestUri+'/'+ req.params.type + '/' + n);
 self.getUAAGlobal(function(UaaGlobal){
       self.checkTS(self.model[0].uri,UaaGlobal,function(temp){ //check uri vs global timeseries
       
-        if(temp == 0){
+        if(temp == 0){ //if its 0 then there is no timeseries data associted with this tag
           self.postGlobalAsset(self.model,localUAA,function(temp){ //post to global asset (right now it is using local UAA so not to mess up any important global assets)
               console.log("[TRYING TO POST..........]");
           });
@@ -116,7 +114,11 @@ self.getUAAGlobal(function(UaaGlobal){
    });
 };
 
+
+///////end of processAssets ///////////
+
 AssetController.prototype.checkTS = function(m,uaa, callback) { //check vs ts, with passed in UAA
+  //make sure that the uaa bearer token passed in "uaa" matches the ts zone-id
   console.log("[INFO] Fetching TS... ");
   var self = this;
 
@@ -139,8 +141,10 @@ request(options, function (error, response, body) {
 });
 };
 
+///////end of checkTS ///////////
 
 AssetController.prototype.postGlobalAsset = function(req,uaa, callback) { //post to global asset with passed in UAA
+    //make sure that the uaa bearer token passed in "uaa" matches the asset zone-id
   var options = { method: 'POST',
   url: 'https://predix-asset.run.aws-usw02-pr.ice.predix.io/testEli',
   headers: 
@@ -159,6 +163,9 @@ request(options, function (error, response, body) {
 });
 };
 
+///////end of postGlobalAsset ///////////
+
+
 AssetController.prototype.getUAA = function(callback) { //get 'local' UAA
 var options = { method: 'GET',
   url: config.uaa.issuerId,
@@ -173,6 +180,7 @@ request(options, function (error, response, body) {
   callback(JSON.parse(body).access_token);
 });
 };
+///////end of getUAA ///////////
 
 
 AssetController.prototype.getUAAGlobal = function(callback) { //get global uaa
@@ -190,9 +198,10 @@ request(options, function (error, response, body) {
 });
 };
 
-////////////////
+///////end of getUAAGlobal ///////////
 
 
+//return methods
 AssetController.prototype.getModel = function() {
   return this.model;
 };
