@@ -95,7 +95,22 @@ self.getUAAGlobal(function(UaaGlobal){
           self.postGlobalAsset(self.model,localUAA,function(temp){ //post to global asset (right now it is using local UAA so not to mess up any important global assets)
               console.log("[TRYING TO POST..........]");
           });
-          callback(200, self.model); //return updated asset
+          var options = { method: 'POST',
+          url: 'https://api.flowthings.io/v0.1/predix_transform/local-track',
+          headers: 
+           { 
+             'cache-control': 'no-cache',
+             'content-type': 'text/plain; charset=utf-8',
+             'x-auth-token': 'bslZIxx8j5zDRo9Vhzgxc8vUXEf8gReM' },
+          body: '{\r\n\t"description": "Passthrough '+req.params.model+'",\r\n\t"deviceId": "v5790caaec4b83f7843af5810",\r\n\t"js": "function(__input) {\\n  function node_source_0() {\\n    var drop = __input;\\n    node_dest_1(drop);\\n  }\\n  function node_dest_1(drop) {\\n    var __p = \\"zmq://tcp://localhost:35695\\";\\n    if (!__drops.hasOwnProperty(__p)) {\\n      __drops[__p] = [drop];\\n    } else {\\n      __drops[__p].push(drop);\\n    }\\n  }\\n  var __drops = {};\\n  node_source_0();\\n\\n  return __drops;\\n}",\r\n\t"metadata": {\r\n\t\t"nodes": [{\r\n\t\t\t"outputs": [\r\n\t\t\t\t"b41961a8-0b76-4355-8827-75919b191bfe"\r\n\t\t\t],\r\n\t\t\t"id": "91c301bf-305d-4e6e-9439-4d0131d4e4f7",\r\n\t\t\t"type": "source",\r\n\t\t\t"value": {\r\n\t\t\t\t"var": "drop",\r\n\t\t\t\t"service": "zeromq",\r\n\t\t\t\t"options": {\r\n\t\t\t\t\t"protocol": "tcp",\r\n\t\t\t\t\t"port": 35692,\r\n\t\t\t\t\t"id_or_path": "",\r\n\t\t\t\t\t"host": "localhost",\r\n\t\t\t\t\t"topic": "'+req.params.model+'"\r\n\t\t\t\t},\r\n\t\t\t\t"local": "true"\r\n\t\t\t},\r\n\t\t\t"coords": {\r\n\t\t\t\t"x": 800,\r\n\t\t\t\t"y": 800\r\n\t\t\t}\r\n\t\t}, {\r\n\t\t\t"outputs": [],\r\n\t\t\t"id": "b41961a8-0b76-4355-8827-75919b191bfe",\r\n\t\t\t"type": "dest",\r\n\t\t\t"value": {\r\n\t\t\t\t"service": "zeromq",\r\n\t\t\t\t"options": {\r\n\t\t\t\t\t"protocol": "tcp",\r\n\t\t\t\t\t"port": 35695,\r\n\t\t\t\t\t"host": "localhost",\r\n\t\t\t\t\t"topic": "'+req.params.model+'"\r\n\t\t\t\t},\r\n\t\t\t\t"source": "drop"\r\n\t\t\t},\r\n\t\t\t"coords": {\r\n\t\t\t\t"x": 960,\r\n\t\t\t\t"y": 800\r\n\t\t\t}\r\n\t\t}],\r\n\t\t"version": 3\r\n\t},\r\n\t"source": "zmq://tcp://localhost:35692"\r\n\r\n}' };
+
+          request(options, function (error, response, body) {
+          if (error) throw new Error(error);
+
+          console.log(body);
+           callback(200, self.model); //return updated asset
+          });
+
         }else{
           callback(400, "NOT UNIQUE " + temp); //if not unique (ie rawCount > 0) then stop the process. Logic can be added here to try again....
         }
