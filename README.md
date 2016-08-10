@@ -124,7 +124,7 @@ This is also in "configMicroservice.txt"
 
 the files that are relevant are:
 
-  manifest.yml
+    manifest.yml
 
  * /routes/index.js
 
