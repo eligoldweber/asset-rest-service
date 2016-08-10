@@ -79,7 +79,7 @@ self.getUAA(function(localUAA){         //get local asset registry UAA
   }
 };
 
-console.log("HERE: " + config.asset.ingestUri+'/'+ req.params.type + '/' + n);
+console.log("Quering this url: " + config.asset.ingestUri+'/'+ req.params.type + '/' + n);
   request.get(options, function (error, response, body) {
     if (!error && response.statusCode == 200) {
       self.model = JSON.parse(response.body); //create new asset model
