@@ -124,19 +124,20 @@ This is also in "configMicroservice.txt"
 
 the files that are relevant are:
 
-    manifest.yml
+manifest.yml
 
- * /routes/index.js
+/routes/index.js **
 
- * /controllers/AssetController.js
+/controllers/AssetController.js **
 
-  /controllers/UAAController.js
+/controllers/UAAController.js
 
-  /config/config.js
+/config/config.js
   
-  /bin/www
+/bin/www
 
-  app.js
+app.js
+
 
 -----------------------------------------
 Eli Goldweber
