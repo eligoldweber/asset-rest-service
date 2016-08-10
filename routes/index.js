@@ -4,8 +4,6 @@ var request = require('request');
 //var https = require('https');
 
 var config = require('../config/config.js');
-var UAAController = require('../controllers/UAAController');
-var uaaController = new UAAController();
 var AssetController = require('../controllers/AssetController');
 
 
@@ -16,7 +14,7 @@ router.get('/:type/:model', function(req, res, next) {
 
 AssetController.getAssets(req,function(status, message){
       res.status(status).send(message);
-      console.log("blah test :" + AssetController.getModel()[0].uri +  " ; " + message[0].model);
+      console.log("response :" + AssetController.getModel()[0].uri +  " ; " + message[0].model);
 
     });
 
@@ -27,7 +25,7 @@ router.post('/demo/:type/:model', function(req, res, next) {
 
 AssetController.processAsset(req,function(status, message){
       res.status(status).send(message);
-      console.log("blah test :" + AssetController.getModel()[0].uri +  " ; " + message[0].model);
+      console.log("response :" + AssetController.getModel()[0].uri +  " ; " + message[0].model);
     });
 
 });
