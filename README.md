@@ -126,17 +126,17 @@ the files that are relevant are:
 
   manifest.yml
 
-  app.js
+ * /routes/index.js
 
-  /routes/index.js
-
-  /controllers/AssetController.js
+ * /controllers/AssetController.js
 
   /controllers/UAAController.js
 
   /config/config.js
   
   /bin/www
+
+  app.js
 
 -----------------------------------------
 Eli Goldweber
